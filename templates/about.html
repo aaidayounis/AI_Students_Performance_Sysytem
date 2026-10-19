@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About & Documentation | AI Students Success Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="{{ url_for('index') }}"><span class="dot"></span>Student Success</a>
+  <div class="links">
+    <a href="#problem">Problem Statement</a>
+    <a href="#docs">Documentation</a>
+    <a href="#team">Collaborators</a>
+    <a href="#run">How to Run</a>
+    <a class="cta" href="{{ url_for('index') }}">🚀 Launch Dashboard</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="pill">Project Documentation &amp; Team</span>
+    <h1>AI Students<br><span class="grad">Research &amp; Collaborators</span></h1>
+    <p class="lead">
+      Comprehensive documentation, problem statement, research methodology, and team profiles for the AI Students Success &amp; Performance System.
+    </p>
+    <div class="hero-btns">
+      <a class="btn" href="{{ url_for('index') }}">🚀 Launch Live Dashboard (Port 5000)</a>
+      <a class="btn ghost" href="#team">View Collaborators</a>
+      <a class="btn ghost" href="#run">Run Project Guide</a>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><b>{{ "{:,}".format(D.N_STUDENTS) }}</b><span>Students Studied</span></div>
+      <div class="kpi"><b>{{ D.N_COLUMNS }}</b><span>Analyzed Features</span></div>
+      <div class="kpi"><b>100%</b><span>Zero JavaScript</span></div>
+      <div class="kpi"><b>{{ collaborators|length }}</b><span>Collaborators</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- PROBLEM STATEMENT -->
+  <section id="problem">
+    <div class="sec-head"><span class="num">01</span><h2>Problem Statement &amp; Motivation</h2></div>
+    <p class="sec-sub">Why this research and analytics application was created, and the educational challenges it resolves.</p>
+
+    <div class="grid3">
+      <article class="card">
+        <div class="doc-icon">🎓</div>
+        <h3>The Educational Challenge</h3>
+        <p class="muted">Academic institutions face significant challenges in detecting struggling students before terminal examinations take place. Traditional assessments only identify distress after midterm failures occur, when corrective study habits are difficult to implement in time.</p>
+      </article>
+
+      <article class="card">
+        <div class="doc-icon">🔍</div>
+        <h3>The "Black-Box" AI Dilemma</h3>
+        <p class="muted">Modern machine learning models (deep neural networks, complex ensembles) often act as opaque black boxes. While they may output a score, they cannot explain <em>why</em> or provide students and advisors with tangible, step-by-step habit adjustments to improve.</p>
+      </article>
+
+      <article class="card">
+        <div class="doc-icon">💡</div>
+        <h3>Our Interpretable Solution</h3>
+        <p class="muted">We built an interpretable, transparent analytics engine grounded in empirical correlation from 4,000 real student profiles. It predicts outcomes with 95% confidence intervals and generates concrete, actionable paths to bridge the gap to higher grade tiers.</p>
+      </article>
+    </div>
+  </section>
+
+  <!-- COMPLETE DOCUMENTATION -->
+  <section id="docs">
+    <div class="sec-head"><span class="num">02</span><h2>Project Documentation &amp; Methodology</h2></div>
+    <p class="sec-sub">Comprehensive specifications covering dataset hygiene, statistical weighting, and architectural design.</p>
+
+    <div class="doc-grid">
+      <div class="card doc-block">
+        <h3>1. Dataset Specifications &amp; Hygiene</h3>
+        <p>The foundation of this system is an empirical dataset of <b>4,000 students</b> across <b>15 attributes</b> encompassing demographic indicators, prior GPA, assessment scores, and behavioral habits.</p>
+        <ul class="doc-list">
+          <li><b>Missing Data Handling:</b> Numeric attributes (Previous GPA, Sleep Hours, Midterm Score, Study Hours) were imputed using the <b>median</b> to prevent outlier skewness. Categorical attributes (Gender, Internet Access) were imputed using the <b>mode</b>.</li>
+          <li><b>Deduplication:</b> The dataset contains <b>0 duplicate rows</b>, ensuring raw sample independence.</li>
+          <li><b>Consistency Across Tests:</b> Quiz (\(\mu \approx 59.38\)), Midterm (\(\mu \approx 59.35\)), and Final Exam (\(\mu \approx 59.50\)) exhibit uniform cohort performance distributions.</li>
+        </ul>
+      </div>
+
+      <div class="card doc-block">
+        <h3>2. Prediction &amp; Weighting Architecture</h3>
+        <p>Rather than relying on uninterpretable weights, the core estimation formula reflects the empirical correlation coefficients derived from exploratory data analysis:</p>
+        <ul class="doc-list">
+          <li><b>Core Drivers:</b> Quiz Average (<b>45%</b> weight, \(r = 0.56\)), Midterm Exam (<b>35%</b> weight, \(r = 0.52\)), and Previous GPA (<b>20%</b> weight, \(r = 0.35\)).</li>
+          <li><b>Habit Adjustment Damping:</b> Group mean shifts from daily study hours, attendance percentage, assignment completion, and internet access are applied with a 0.5 damping factor to prevent multicollinearity double-counting.</li>
+          <li><b>95% Prediction Interval:</b> Based on the model's residual standard error (\(S_e \approx 12.8\)), estimates include a \(\pm 8.5\)-point confidence interval to acknowledge human performance variance.</li>
+        </ul>
+      </div>
+
+      <div class="card doc-block">
+        <h3>3. Zero-JavaScript Technical Architecture</h3>
+        <p>Designed with a strict engineering constraint of <b>zero client-side JavaScript</b>, maximizing speed, security, and universal device compatibility:</p>
+        <ul class="doc-list">
+          <li><b>Server-Side SVG Generation:</b> All visualizations (Gaussian normal distribution bell curves, 6-axis radar charts, trend lines, and radial gauges) are drawn directly on the server in Python.</li>
+          <li><b>Pure CSS Interactivity:</b> Tabulations, hover states, dark/light theme switching, and accordion disclosures use modern native HTML5 and CSS3.</li>
+          <li><b>Print &amp; PDF Engine:</b> Dedicated <code>@media print</code> rules allow instant 1-click printing or PDF exporting of student diagnostic reports.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COLLABORATORS CARDS -->
+  <section id="team">
+    <div class="sec-head"><span class="num">03</span><h2>Project Collaborators &amp; Team</h2></div>
+    <p class="sec-sub">The developers, data analysts, and researchers behind this project. Connect with our GitHub profiles and portfolios.</p>
+
+    <div class="team-grid">
+      {% for member in collaborators %}
+      <article class="card team-card">
+        <div class="team-header">
+          <div class="avatar">{{ member.initials }}</div>
+          <div>
+            <span class="role-badge">{{ member.badge }}</span>
+            <h3 class="team-name">{{ member.name }}</h3>
+            <p class="team-role">{{ member.role }}</p>
+          </div>
+        </div>
+        <p class="team-bio">{{ member.bio }}</p>
+        <div class="team-links">
+          <a class="team-btn" href="{{ member.github }}" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+            GitHub
+          </a>
+          <a class="team-btn ghost" href="{{ member.portfolio }}" target="_blank" rel="noopener noreferrer">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+            Portfolio
+          </a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- HOW TO RUN & AUTOMATIC LAUNCH -->
+  <section id="run">
+    <div class="sec-head"><span class="num">04</span><h2>Quick Launch &amp; Local Execution</h2></div>
+    <p class="sec-sub">Run the dashboard locally or jump straight into the live instance on your system.</p>
+
+    <div class="card run-card">
+      <div class="run-header">
+        <div>
+          <h3>🚀 Live Server Launch</h3>
+          <p class="muted" style="margin-bottom:0">If your server is running, click below to open the dashboard immediately on port 5000.</p>
+        </div>
+        <a class="btn" href="{{ url_for('index') }}" style="flex:none">Open Live Dashboard (Port 5000)</a>
+      </div>
+
+      <div class="run-box">
+        <h4>1-Click Launcher (Python Standard Library)</h4>
+        <p class="muted">To automatically start the Flask server and pop open the dashboard in your default browser in one command, run:</p>
+        <pre class="code-block"><code>python run.py</code></pre>
+
+        <h4 style="margin-top:18px">Standard Startup</h4>
+        <pre class="code-block"><code>pip install -r requirements.txt
+python app.py</code></pre>
+        <p class="muted" style="margin-top:8px">Open your browser and navigate to <b>http://127.0.0.1:5000</b></p>
+
+        <h4 style="margin-top:18px">Execute Automated Test Suite</h4>
+        <pre class="code-block"><code>python -m unittest discover tests</code></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">AI Students Success &amp; Performance &middot; Python &middot; Flask &middot; HTML &amp; CSS &middot; Zero JavaScript</div>
+</footer>
+
+</body>
+</html>

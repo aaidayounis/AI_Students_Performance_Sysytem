@@ -68,3 +68,43 @@ CORR = [
     [0.24, 0.15, 0.05, 0.52, 0.56, 0.35, 1.00],
 ]
 R_QUIZ_FINAL = 0.56
+
+# Project collaborators & roles
+COLLABORATORS = [
+    {
+        "name": "Aaida Younis",
+        "role": "Project Lead & Full Stack Architect",
+        "bio": "Led dataset exploration, correlation matrix derivation, statistical projection rules, and Flask server architecture.",
+        "github": "https://github.com/aaidayounis",
+        "portfolio": "https://github.com/aaidayounis",
+        "initials": "AY",
+        "badge": "Lead Developer",
+    },
+    {
+        "name": "Collaborator 1",
+        "role": "Data Science & Statistical Analysis",
+        "bio": "Conducted exploratory data analysis, missing value median/mode imputation, and habit correlation benchmarking.",
+        "github": "https://github.com/aaidayounis",
+        "portfolio": "https://github.com/aaidayounis",
+        "initials": "C1",
+        "badge": "Data Science",
+    },
+    {
+        "name": "Collaborator 2",
+        "role": "Visualization & UI Design",
+        "bio": "Designed the pure CSS responsive layout, server-side SVG Gaussian bell curve, and 6-axis radar polygons.",
+        "github": "https://github.com/aaidayounis",
+        "portfolio": "https://github.com/aaidayounis",
+        "initials": "C2",
+        "badge": "UI & Charts",
+    },
+    {
+        "name": "Collaborator 3",
+        "role": "QA, Testing & Documentation",
+        "bio": "Implemented automated unittest suites, verified route security, and authored problem statement documentation.",
+        "github": "https://github.com/aaidayounis",
+        "portfolio": "https://github.com/aaidayounis",
+        "initials": "C3",
+        "badge": "QA & Docs",
+    },
+]

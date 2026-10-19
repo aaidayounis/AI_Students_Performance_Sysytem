@@ -88,6 +88,11 @@ def index():
     )
 
 
+@app.route("/about")
+def about():
+    return render_template("about.html", D=D, collaborators=D.COLLABORATORS)
+
+
 @app.route("/export")
 def export():
     values, errors = analysis.parse(request.args)

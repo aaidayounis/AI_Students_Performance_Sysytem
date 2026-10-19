@@ -20,6 +20,13 @@ class TestRoutes(unittest.TestCase):
         self.assertIn(b"Estimated final exam", resp.data)
         self.assertIn(b"95% Confidence Interval", resp.data)
 
+    def test_get_about(self):
+        resp = self.client.get("/about")
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn(b"Collaborators", resp.data)
+        self.assertIn(b"Problem Statement", resp.data)
+        self.assertIn(b"Aaida Younis", resp.data)
+
     def test_post_analyzer(self):
         form_data = {
             "quiz": "75",
