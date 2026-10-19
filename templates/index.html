@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Students Success Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="#top"><span class="dot"></span>Student Success</a>
+  <div class="links">
+    <a href="#data">Data</a>
+    <a href="#grades">Charts</a>
+    <a href="#factors">Factors</a>
+    <a href="#findings">Findings</a>
+    <a href="#methodology">Methodology</a>
+    <a class="cta" href="#analyzer">Analyse my marks</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <div class="wrap">
+    <span class="pill">Data Analytics Project</span>
+    <h1>AI Students<br><span class="grad">Success &amp; Performance</span></h1>
+    <p class="lead">
+      This project studies a dataset of <b>{{ "{:,}".format(D.N_STUDENTS) }} students</b> to find out what really
+      drives exam success. After cleaning the data, we compare final grades, quiz, midterm and final scores,
+      and look at how study hours, attendance, assignments, sleep and internet access relate to the final exam.
+      At the end, you can enter your own marks and get an instant analysis.
+    </p>
+    <div class="hero-btns">
+      <a class="btn" href="#analyzer">Try the marks analyser</a>
+      <a class="btn ghost" href="#grades">See the analysis</a>
+    </div>
+    <div class="kpis">
+      <div class="kpi"><b>{{ "{:,}".format(D.N_STUDENTS) }}</b><span>Students</span></div>
+      <div class="kpi"><b>{{ D.N_COLUMNS }}</b><span>Features</span></div>
+      <div class="kpi"><b>{{ "%.1f"|format(D.STATS.final.mean) }}</b><span>Average final score</span></div>
+      <div class="kpi"><b>{{ top_grade[0] }}</b><span>Most common grade</span></div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- DATA CLEANING -->
+  <section id="data">
+    <div class="sec-head"><span class="num">01</span><h2>Data cleaning</h2></div>
+    <p class="sec-sub">Before any analysis, missing values were found and filled: <b>median</b> for numbers and <b>most frequent value (mode)</b> for categories. The dataset had <b>{{ D.DUPLICATES }} duplicate rows</b>.</p>
+    <div class="card">
+      <h3>Missing values per column</h3>
+      {{ charts.missing }}
+      <div class="legend"><i style="background:#8b5cf6"></i> filled with median <i style="background:#e879a9"></i> filled with mode</div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section id="grades">
+    <div class="sec-head"><span class="num">02</span><h2>Performance overview</h2></div>
+    <div class="grid2">
+      <article class="card">
+        <h3>Final grade distribution</h3>
+        {{ charts.grades }}
+        <p class="insight">Shows how students are spread across final grades. Grade <b>{{ top_grade[0] }}</b> is the most common, so the typical student performs at a middle level, and only a small group reaches A or A+.</p>
+      </article>
+      <article class="card">
+        <h3>Average academic scores</h3>
+        {{ charts.scores }}
+        <p class="insight">Quiz, midterm and final exam averages are almost identical (about 59), so students perform consistently across assessments.</p>
+      </article>
+      <article class="card">
+        <h3>Internet access vs final score</h3>
+        {{ charts.internet }}
+        <p class="insight">Students with internet access score about <b>{{ "%.1f"|format(net_gain) }} points higher</b> on average. Access to online resources may help, though internet alone does not guarantee better results.</p>
+      </article>
+      <article class="card">
+        <h3>Quiz average vs final exam</h3>
+        {{ charts.trend }}
+        <p class="insight">A clear positive relationship (correlation <b>{{ D.R_QUIZ_FINAL }}</b>): students with higher quiz scores generally achieve higher final exam scores. The line shows the expected trend.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="factors">
+    <div class="sec-head"><span class="num">03</span><h2>What affects the final exam?</h2></div>
+    <div class="grid2">
+      <article class="card">
+        <h3>Study hours per day</h3>
+        {{ charts.study }}
+        <p class="insight">The strongest habit effect: students studying above 6 hours score <b>{{ "%.1f"|format(study_gain) }} points more</b> than those studying under 2 hours.</p>
+      </article>
+      <article class="card">
+        <h3>Attendance</h3>
+        {{ charts.attendance }}
+        <p class="insight">Scores rise steadily with attendance, about <b>{{ "%.1f"|format(att_gain) }} points</b> between the lowest and highest groups.</p>
+      </article>
+      <article class="card">
+        <h3>Assignment completion</h3>
+        {{ charts.completion }}
+        <p class="insight">Completing more assignments goes with higher scores. No student completed less than 26%, so that group is not shown.</p>
+      </article>
+      <article class="card">
+        <h3>Sleep duration</h3>
+        {{ charts.sleep }}
+        <p class="insight">The effect of sleep is small. Only the 9+ hours group is noticeably higher, and it is a small, less certain group.</p>
+      </article>
+    </div>
+
+    <div class="card heat-card">
+      <h3>Correlation heatmap</h3>
+      <p class="muted">How strongly each factor moves with the others (1 = perfectly together, 0 = unrelated).</p>
+      <div class="heat-scroll">
+      <table class="heat">
+        <thead><tr><th></th>{% for l in D.CORR_LABELS %}<th>{{ l }}</th>{% endfor %}</tr></thead>
+        <tbody>
+        {% for name, cells in heat %}
+          <tr><th>{{ name }}</th>{% for t, bg, fg in cells %}<td style="background:{{ bg }};color:{{ fg }}">{{ t }}</td>{% endfor %}</tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      </div>
+      <p class="insight">Quiz average (0.56) and midterm score (0.52) are the strongest links to the final exam, followed by previous GPA (0.35) and daily study hours (0.24).</p>
+    </div>
+  </section>
+
+  <!-- FINDINGS -->
+  <section id="findings">
+    <div class="sec-head"><span class="num">04</span><h2>Key findings</h2></div>
+    <div class="grid3">
+      <div class="find"><span class="ic">1</span><h4>Earlier marks predict the final</h4><p>Quizzes and midterm have the highest correlation with the final exam.</p></div>
+      <div class="find"><span class="ic">2</span><h4>Study time pays off</h4><p>Moving from under 2 to over 6 hours a day goes with +{{ "%.0f"|format(study_gain) }} points.</p></div>
+      <div class="find"><span class="ic">3</span><h4>Show up and submit</h4><p>Higher attendance and assignment completion both go with higher scores.</p></div>
+      <div class="find"><span class="ic">4</span><h4>Internet helps a bit</h4><p>About +{{ "%.0f"|format(net_gain) }} points for students with access.</p></div>
+      <div class="find"><span class="ic">5</span><h4>Sleep matters least</h4><p>Differences between sleep groups are small compared with study hours.</p></div>
+      <div class="find"><span class="ic">6</span><h4>Association, not proof</h4><p>These are patterns in the data and do not prove that one thing causes another.</p></div>
+    </div>
+  </section>
+
+  <!-- METHODOLOGY & NOTES -->
+  <section id="methodology">
+    <div class="sec-head"><span class="num">05</span><h2>Methodology &amp; Statistical Notes</h2></div>
+    <p class="sec-sub">Understanding the data hygiene, correlation weights, and projection formulas behind this dashboard.</p>
+    <div class="faq-accordion">
+      <details class="card faq-item" open>
+        <summary><b>How is the estimated final exam score computed?</b></summary>
+        <div class="faq-body">
+          <p>The estimator uses an empirically-weighted formula derived from the dataset's correlation matrix. The baseline score is driven by the three strongest factors: <b>Quiz Average (45%)</b>, <b>Midterm Score (35%)</b>, and <b>Previous GPA (20%)</b>. Habit adjustments (study hours, attendance, assignments, sleep, and internet access) are then added using half-weight damping to reflect observed cohort averages while preventing multicollinearity double-counting.</p>
+        </div>
+      </details>
+      <details class="card faq-item">
+        <summary><b>Why is there a 95% Confidence Interval (±8.5 points)?</b></summary>
+        <div class="faq-body">
+          <p>In observational academic datasets, human exam performance involves natural variance. Based on the residual standard error (<em>S<sub>e</sub> &approx; 12.8</em>) of this 4,000-student dataset, the 95% prediction interval indicates the likely score band for 19 out of 20 students with your profile under standard exam conditions.</p>
+        </div>
+      </details>
+      <details class="card faq-item">
+        <summary><b>How were missing values and outliers handled?</b></summary>
+        <div class="faq-body">
+          <p>Numeric variables with missing values (such as Previous GPA, Sleep Hours, Midterm Score) were imputed using their respective <b>medians</b> to remain robust against skewness and outliers. Categorical fields (Gender and Internet Access) were imputed using the <b>mode</b> (most frequent value).</p>
+        </div>
+      </details>
+      <details class="card faq-item">
+        <summary><b>Why is this dashboard built with zero JavaScript?</b></summary>
+        <div class="faq-body">
+          <p>All data charts (bar charts, normal distribution bell curve, trend lines, score ring, and multi-factor radar chart) are generated dynamically on the server in Python as pure vector SVGs. This delivers instant page rendering, zero client-side tracking, universal browser compatibility, and minimal network overhead.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ANALYZER -->
+  <section id="analyzer">
+    <div class="sec-head"><span class="num">06</span><h2>Analyse your marks</h2></div>
+    <p class="sec-sub">Enter your marks and habits. We compare them with the {{ "{:,}".format(D.N_STUDENTS) }} students above, estimate your final exam score with a 95% confidence interval, and suggest actionable ways to reach the next grade tier.</p>
+
+    <!-- Quick Presets -->
+    <div class="presets-bar no-print">
+      <span class="presets-label">⚡ Quick Presets:</span>
+      <div class="presets-list">
+        {% for pkey, pinfo in presets.items() %}
+          <a class="preset-pill {{ 'active' if active_preset == pkey }}" href="{{ url_for('index', preset=pkey) }}#analyzer" title="{{ pinfo.desc }}">
+            <b>{{ pinfo.title }}</b>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="analyzer">
+      <form class="card form no-print" method="post" action="{{ url_for('index') }}#analyzer" novalidate>
+        <div class="fields">
+          {% for key, label, lo, hi, step, unit, hint in fields %}
+          <label class="field {{ 'bad' if key in errors }}">
+            <span class="fl">{{ label }} <em>{{ unit }}</em></span>
+            <input type="number" name="{{ key }}" min="{{ lo }}" max="{{ hi }}" step="{{ step }}" required
+                   value="{{ values.get(key, '') }}" placeholder="{{ hint }}">
+            {% if key in errors %}<small class="err">{{ errors[key] }}</small>{% endif %}
+          </label>
+          {% endfor %}
+        </div>
+        <fieldset class="seg">
+          <legend>Internet access at home</legend>
+          <label><input type="radio" name="internet" value="yes" {{ 'checked' if values.internet == 'yes' }}><span>Yes</span></label>
+          <label><input type="radio" name="internet" value="no" {{ 'checked' if values.internet == 'no' }}><span>No</span></label>
+        </fieldset>
+        <div class="form-btns">
+          <button class="btn" type="submit">Analyse</button>
+          <a class="btn ghost dark" href="{{ url_for('index', sample=1) }}#analyzer">Fill sample marks</a>
+        </div>
+      </form>
+
+      <div class="result" id="report-section">
+      {% if result %}
+        <div class="card res-top">
+          {{ ring }}
+          <div class="res-meta">
+            <span class="pill soft">Estimated final exam</span>
+            <h3 class="grade">Grade <b>{{ result.grade }}</b></h3>
+            <p class="verdict">{{ result.verdict }}</p>
+            <p class="muted">You are about <b>{{ "%.0f"|format(result.pct) }}th percentile</b>
+              ({{ "%+.1f"|format(result.above) }} vs the average {{ "%.1f"|format(D.STATS.final.mean) }}).</p>
+            <div class="ci-badge">
+              <span class="ci-tag">95% Confidence Interval:</span>
+              <b>{{ result.ci_low }} – {{ result.ci_high }} pts</b>
+              <small>(±{{ result.ci_margin }} pts margin)</small>
+            </div>
+          </div>
+        </div>
+
+        {% if result.target_advice and result.target_advice.next_grade %}
+        <div class="card target-card">
+          <div class="target-head">
+            <span class="target-tag">Target Goal</span>
+            <h3>Path to Grade <b>{{ result.target_advice.next_grade }}</b></h3>
+          </div>
+          <p class="target-desc">Current projection: <b>{{ "%.1f"|format(result.est) }}</b>. Reaching <b>Grade {{ result.target_advice.next_grade }}</b> requires reaching <b>{{ result.target_advice.target_score }}</b> (+{{ "%.1f"|format(result.target_advice.gap) }} pts).</p>
+          <ul class="target-actions">
+            {% for act in result.target_advice.actions %}
+              <li>{{ act }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+        {% endif %}
+
+        <div class="grid2 tight">
+          <div class="card">
+            <h3>Cohort Percentile Distribution</h3>
+            {{ bell }}
+            <p class="insight">Normal distribution bell curve of the 4,000 students (&mu; = {{ D.STATS.final.mean }}, &sigma; = {{ D.STATS.final.std }}). The shaded area marks your standing.</p>
+          </div>
+          <div class="card">
+            <h3>Multi-Dimensional Profile</h3>
+            {{ radar }}
+            <p class="insight">Compares your normalized scores (0–100%) against typical cohort averages across 6 academic factors.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>You vs average student</h3>
+          <div class="cmp">
+          {% for c in result.compare %}
+            <div class="cmp-row">
+              <div class="cmp-name">{{ c.name }}
+                <span class="{{ 'up' if c.z >= 0.5 else 'down' if c.z <= -0.5 else 'mid' }}">
+                  {{ 'Above average' if c.z >= 0.5 else 'Below average' if c.z <= -0.5 else 'Around average' }}</span></div>
+              <div class="track"><i class="you" style="width:{{ '%.1f'|format(c.you_w) }}%"></i>
+                <b class="avg" style="left:{{ '%.1f'|format(c.avg_w) }}%" title="Average"></b></div>
+              <div class="cmp-val">{{ "%.1f"|format(c.you) }}{{ c.suf }} <small>avg {{ "%.1f"|format(c.avg) }}{{ c.suf }}</small></div>
+            </div>
+          {% endfor %}
+          </div>
+          <div class="legend"><i style="background:linear-gradient(90deg,#a78bfa,#6d28d9)"></i> You <i class="tick"></i> Student average</div>
+        </div>
+
+        <div class="grid2 tight">
+          <div class="card mini good"><h4>Strengths</h4>
+            {% if result.strengths %}<ul>{% for s in result.strengths %}<li>{{ s }}</li>{% endfor %}</ul>
+            {% else %}<p class="muted">Nothing far above average yet - small gains everywhere will add up.</p>{% endif %}</div>
+          <div class="card mini warn"><h4>Focus areas</h4>
+            {% if result.focus %}<ul>{% for s in result.focus %}<li>{{ s }}</li>{% endfor %}</ul>
+            {% else %}<p class="muted">No area is far below average.</p>{% endif %}</div>
+        </div>
+
+        <div class="card">
+          <h3>Personalized action plan</h3>
+          <ol class="tips">{% for t in result.tips %}<li>{{ t }}</li>{% endfor %}</ol>
+        </div>
+
+        <div class="action-bar no-print">
+          <a class="btn ghost dark" href="{{ url_for('export') }}?{{ export_query }}" title="Download summary as CSV">
+            📥 Download CSV Report
+          </a>
+          <button type="button" class="btn ghost dark" onclick="window.print()" title="Print report or save as PDF">
+            🖨️ Print / Save PDF
+          </button>
+        </div>
+      {% else %}
+        <div class="card empty">
+          <div class="empty-ic">&#9998;</div>
+          <h3>Your analysis will appear here</h3>
+          <p class="muted">{% if errors %}Please fix the highlighted fields and press Analyse again.{% else %}Fill in the form and press <b>Analyse</b>, or pick one of the <b>Quick Presets</b> above.{% endif %}</p>
+        </div>
+      {% endif %}
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">AI Students Success &amp; Performance &middot; Python &middot; Flask &middot; HTML &amp; CSS &middot; built from the project notebook</div>
+</footer>
+</body>
+</html>

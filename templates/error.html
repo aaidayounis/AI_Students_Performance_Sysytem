@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ code }} - {{ title }} | Student Success Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav class="nav">
+  <a class="brand" href="{{ url_for('index') }}"><span class="dot"></span>Student Success</a>
+  <div class="links">
+    <a class="cta" href="{{ url_for('index') }}">Back to Dashboard</a>
+  </div>
+</nav>
+
+<main class="wrap" style="padding-top: 60px; min-height: 70vh;">
+  <div class="card empty" style="max-width: 600px; margin: 40px auto; padding: 48px 32px;">
+    <div class="empty-ic" style="font-weight: 800; font-size: 2rem;">{{ code }}</div>
+    <h2 style="margin: 12px 0;">{{ title }}</h2>
+    <p class="muted" style="margin-bottom: 24px;">{{ message }}</p>
+    <a class="btn" href="{{ url_for('index') }}">Return to Dashboard</a>
+  </div>
+</main>
+
+<footer>
+  <div class="wrap">AI Students Success &amp; Performance &middot; Python &middot; Flask &middot; HTML &amp; CSS</div>
+</footer>
+</body>
+</html>
